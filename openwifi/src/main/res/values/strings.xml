@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">OpenWifi</string>
-    <string name="hello_world">OpenWiFi</string>
+    <string name="app_name">openWifi</string>
+    <string name="hello_world">openWiFi</string>
     <string name="action_settings">Settings</string>
     <string name="disclaimer">Disclaimer</string>
-    <string name="disc_msg">Please consult your local laws. The use of this app may be against the law in some countries. Use at your own risk!</string>
+    <string name="disc_msg">Please consult your local laws. The use of this app may be against the law in some countries.<br /><font color="#ff0000">Use at your own risk!</font></string>
     <string name="ok">OK</string>
+    <string name="understand">I agree</string>
+    <string name="cancel">Cancel</string>
 
 </resources>
