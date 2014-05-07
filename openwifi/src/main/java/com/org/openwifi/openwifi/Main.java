@@ -11,13 +11,11 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -35,9 +33,9 @@ public class Main extends Activity {
 
     private List<ScanResult> results;
     private WifiManager wifi;
-    private ArrayAdapter<String> adapter;
+    private WifiListAdapter adapter;
     private ListView wifiList;
-    private List<String> wifiNames = new ArrayList<String>();
+    private ArrayList<String> wifiNames = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +67,9 @@ public class Main extends Activity {
     }
 
     private void scan() {
-        Toast.makeText(this, "Scanning....", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Scanning...", Toast.LENGTH_SHORT).show();
 
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, wifiNames);
+        adapter = new WifiListAdapter(this, R.id.results, wifiNames);
         wifiList.setAdapter(adapter);
 
         wifi.startScan();
@@ -82,7 +80,6 @@ public class Main extends Activity {
                 results = wifi.getScanResults();
                 getWifiNames();
                 adapter.notifyDataSetChanged();
-                Log.d("here", "lalala");
             }
         }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
     }

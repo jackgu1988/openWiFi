@@ -941,7 +941,7 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f070015;
         public static final int action_menu_presenter=0x7f070016;
         public static final int action_mode_close_button=0x7f070024;
-        public static final int action_settings=0x7f070043;
+        public static final int action_settings=0x7f070045;
         public static final int activity_chooser_view_content=0x7f070025;
         public static final int always=0x7f07000f;
         public static final int beginning=0x7f07000a;
@@ -963,6 +963,7 @@ containing a value of this type.
         public static final int layout_root=0x7f07003f;
         public static final int listMode=0x7f070001;
         public static final int list_item=0x7f070029;
+        public static final int mac=0x7f070044;
         public static final int middle=0x7f07000b;
         public static final int never=0x7f07000d;
         public static final int none=0x7f070009;
@@ -987,6 +988,7 @@ containing a value of this type.
         public static final int showHome=0x7f070004;
         public static final int showTitle=0x7f070006;
         public static final int split_action_bar=0x7f07001e;
+        public static final int ssid=0x7f070043;
         public static final int submit_area=0x7f070039;
         public static final int tabMode=0x7f070002;
         public static final int title=0x7f07002b;
@@ -1031,6 +1033,7 @@ containing a value of this type.
         public static final int checkbox=0x7f030019;
         public static final int row=0x7f03001a;
         public static final int support_simple_spinner_dropdown_item=0x7f03001b;
+        public static final int wifi_adapter_layout=0x7f03001c;
     }
     public static final class menu {
         public static final int main=0x7f0c0000;
