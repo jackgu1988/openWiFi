@@ -11,6 +11,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.DialogInterface.BUTTON_POSITIVE;
-
 
 public class Main extends Activity {
 
@@ -74,12 +74,15 @@ public class Main extends Activity {
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, wifiNames);
         wifiList.setAdapter(adapter);
 
+        wifi.startScan();
+
         registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context c, Intent intent) {
                 results = wifi.getScanResults();
                 getWifiNames();
                 adapter.notifyDataSetChanged();
+                Log.d("here", "lalala");
             }
         }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
     }
