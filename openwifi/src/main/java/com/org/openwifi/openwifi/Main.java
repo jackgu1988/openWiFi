@@ -36,6 +36,7 @@ public class Main extends Activity {
     private WifiListAdapter adapter;
     private ListView wifiList;
     private ArrayList<String> wifiNames = new ArrayList<String>();
+    private ArrayList<String> macNames = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,7 @@ public class Main extends Activity {
         scanWifi();
     }
 
-    public void refresh(View v) {
+    public void refresh() {
         scanWifi();
     }
 
@@ -60,17 +61,18 @@ public class Main extends Activity {
 
         wifi = (WifiManager) getSystemService(this.WIFI_SERVICE);
 
-        if (!wifi.isWifiEnabled())
+        adapter = new WifiListAdapter(this, R.id.withText, wifiNames, macNames);
+        wifiList.setAdapter(adapter);
+
+        if (!wifi.isWifiEnabled()) {
             Toast.makeText(getApplicationContext(), getString(R.string.wifi_off), Toast.LENGTH_LONG).show();
-        else
+            noWifi();
+        } else
             scan();
     }
 
     private void scan() {
-        Toast.makeText(this, "Scanning...", Toast.LENGTH_SHORT).show();
-
-        adapter = new WifiListAdapter(this, R.id.results, wifiNames);
-        wifiList.setAdapter(adapter);
+        Toast.makeText(this, getString(R.string.scanning), Toast.LENGTH_SHORT).show();
 
         wifi.startScan();
 
@@ -80,15 +82,28 @@ public class Main extends Activity {
                 results = wifi.getScanResults();
                 getWifiNames();
                 adapter.notifyDataSetChanged();
+                if (results.size() == 0)
+                    noWifi();
             }
         }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
     }
 
+    private void noWifi() {
+        wifiNames.clear();
+        macNames.clear();
+
+        wifiNames.add("No networks available!");
+        macNames.add("");
+        adapter.notifyDataSetChanged();
+    }
+
     private void getWifiNames() {
         wifiNames.clear();
+        macNames.clear();
 
         for (int i = 0; i < results.size(); i++) {
             wifiNames.add(results.get(i).SSID);
+            macNames.add(results.get(i).BSSID);
         }
     }
 
@@ -154,6 +169,9 @@ public class Main extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == R.id.action_refresh) {
+            refresh();
             return true;
         }
         return super.onOptionsItemSelected(item);

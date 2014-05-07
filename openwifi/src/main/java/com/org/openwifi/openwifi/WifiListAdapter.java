@@ -14,25 +14,40 @@ import java.util.ArrayList;
  */
 public class WifiListAdapter extends ArrayAdapter {
 
-    private ArrayList<String> items;
+    private ArrayList<String> ssid;
+    private ArrayList<String> bssid;
 
     public WifiListAdapter(Context context, int textViewResourceId,
-                           ArrayList<String> items) {
-        super(context, textViewResourceId, items);
-        this.items = items;
+                           ArrayList<String> ssid, ArrayList<String> bssid) {
+        super(context, textViewResourceId, ssid);
+
+        ssid.clear();
+        bssid.clear();
+
+        this.ssid = ssid;
+        this.bssid = bssid;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
-        String current = items.get(position);
+        String currentSsid = ssid.get(position);
+        String currentBssid = bssid.get(position);
 
         if (v == null) {
             LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = vi.inflate(R.layout.wifi_adapter_layout, null);
         }
-        TextView ssid = (TextView) v.findViewById(R.id.ssid);
-        ssid.setText(current);
+        TextView ssidText = (TextView) v.findViewById(R.id.ssid);
+        TextView bssidText = (TextView) v.findViewById(R.id.bssid);
+
+        // clear
+        ssidText.setText("");
+        bssidText.setText("");
+
+        ssidText.setText(currentSsid);
+        if (!currentBssid.equals(""))
+            bssidText.setText("BSSID: " + currentBssid);
         return v;
     }
 }

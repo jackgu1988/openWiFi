@@ -10,5 +10,6 @@
     <string name="understand">I agree</string>
     <string name="cancel">Cancel</string>
     <string name="wifi_off">Please enable your WiFi.</string>
+    <string name="scanning">Scanning...</string>
 
 </resources>
