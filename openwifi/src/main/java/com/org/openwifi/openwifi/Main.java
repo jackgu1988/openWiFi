@@ -2,7 +2,13 @@ package com.org.openwifi.openwifi;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.ContextThemeWrapper;
@@ -10,7 +16,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 
@@ -21,6 +33,12 @@ public class Main extends Activity {
     private AlertDialog acceptD;
     private boolean firstrun;
 
+    private List<ScanResult> results;
+    private WifiManager wifi;
+    private ArrayAdapter<String> adapter;
+    private ListView wifiList;
+    private List<String> wifiNames = new ArrayList<String>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +47,48 @@ public class Main extends Activity {
         firstrun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("firstrun", true);
         if (firstrun) {
             showDisclaimer();
+        }
+
+        scanWifi();
+    }
+
+    public void refresh(View v) {
+        scanWifi();
+    }
+
+    private void scanWifi() {
+
+        wifiList = (ListView) findViewById(R.id.wifiList);
+
+        wifi = (WifiManager) getSystemService(this.WIFI_SERVICE);
+
+        if (!wifi.isWifiEnabled())
+            Toast.makeText(getApplicationContext(), getString(R.string.wifi_off), Toast.LENGTH_LONG).show();
+        else
+            scan();
+    }
+
+    private void scan() {
+        Toast.makeText(this, "Scanning....", Toast.LENGTH_SHORT).show();
+
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, wifiNames);
+        wifiList.setAdapter(adapter);
+
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context c, Intent intent) {
+                results = wifi.getScanResults();
+                getWifiNames();
+                adapter.notifyDataSetChanged();
+            }
+        }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+    }
+
+    private void getWifiNames() {
+        wifiNames.clear();
+
+        for (int i = 0; i < results.size(); i++) {
+            wifiNames.add(results.get(i).SSID);
         }
     }
 
