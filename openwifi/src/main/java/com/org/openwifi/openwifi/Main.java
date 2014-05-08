@@ -37,6 +37,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -97,10 +98,32 @@ public class Main extends Activity {
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         input.setTextColor(0xFF000000);
 
+        final CheckBox showPass = new CheckBox(this);
+        showPass.setSelected(false);
+        showPass.setText(getString(R.string.show_pass));
+        showPass.callOnClick();
+        showPass.setTextColor(0xFF000000);
+
+        LinearLayout boxFields = new LinearLayout(this);
+        boxFields.setOrientation(LinearLayout.VERTICAL);
+        boxFields.addView(input);
+        boxFields.addView(showPass);
+
+        showPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    input.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+                } else {
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }
+            }
+        });
+
         AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DiscDialog));
         alert.setTitle(wifiNames.get(pos))
-                .setMessage(getString(R.string.enter_pass) + " (" + security + "):")
-                .setView(input)
+                .setMessage(getString(R.string.enter_pass))
+                .setView(boxFields)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String pass = input.getText().toString();
