@@ -124,13 +124,15 @@ public class Main extends Activity {
         alert.setTitle(wifiNames.get(pos))
                 .setMessage(getString(R.string.enter_pass))
                 .setView(boxFields)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String pass = input.getText().toString();
                         return;
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int which) {
                         return;
                     }
@@ -172,7 +174,7 @@ public class Main extends Activity {
         wifiNames.clear();
         macNames.clear();
 
-        wifiNames.add("No networks available!");
+        wifiNames.add(getString(R.string.no_networks));
         macNames.add("");
         adapter.notifyDataSetChanged();
     }

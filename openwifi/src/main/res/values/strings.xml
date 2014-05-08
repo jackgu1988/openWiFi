@@ -13,5 +13,6 @@
     <string name="scanning">Scanning...</string>
     <string name="enter_pass">Enter Password:</string>
     <string name="show_pass">Show password</string>
+    <string name="no_networks">No networks available!</string>
 
 </resources>
