@@ -28,12 +28,15 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.InputType;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -65,7 +68,53 @@ public class Main extends Activity {
             showDisclaimer();
         }
 
+        wifiList = (ListView) findViewById(R.id.wifiList);
+
+        wifi = (WifiManager) getSystemService(this.WIFI_SERVICE);
+
+        adapter = new WifiListAdapter(this, R.id.withText, wifiNames, macNames);
+        wifiList.setAdapter(adapter);
+
+        wifiSelect();
         scanWifi();
+    }
+
+    private void wifiSelect() {
+
+        wifiList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                Toast.makeText(getApplicationContext(), "" + position, Toast.LENGTH_SHORT).show();
+
+                connectionDialog(position);
+            }
+        });
+    }
+
+    private void connectionDialog(int pos) {
+
+        String security = results.get(pos).capabilities;
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        input.setTextColor(0xFF000000);
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DiscDialog));
+        alert.setTitle(wifiNames.get(pos))
+                .setMessage(getString(R.string.enter_pass) + " (" + security + "):")
+                .setView(input)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String pass = input.getText().toString();
+                        return;
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        return;
+                    }
+                })
+                .show();
     }
 
     public void refresh() {
@@ -73,13 +122,6 @@ public class Main extends Activity {
     }
 
     private void scanWifi() {
-
-        wifiList = (ListView) findViewById(R.id.wifiList);
-
-        wifi = (WifiManager) getSystemService(this.WIFI_SERVICE);
-
-        adapter = new WifiListAdapter(this, R.id.withText, wifiNames, macNames);
-        wifiList.setAdapter(adapter);
 
         if (!wifi.isWifiEnabled()) {
             Toast.makeText(getApplicationContext(), getString(R.string.wifi_off), Toast.LENGTH_LONG).show();

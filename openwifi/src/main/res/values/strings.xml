@@ -11,5 +11,6 @@
     <string name="cancel">Cancel</string>
     <string name="wifi_off">Please enable your WiFi.</string>
     <string name="scanning">Scanning...</string>
+    <string name="enter_pass">Enter Password</string>
 
 </resources>
