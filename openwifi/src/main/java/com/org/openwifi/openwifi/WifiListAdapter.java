@@ -33,9 +33,10 @@ public class WifiListAdapter extends ArrayAdapter {
 
     private ArrayList<String> ssid;
     private ArrayList<String> bssid;
+    private ArrayList<String> sec;
 
     public WifiListAdapter(Context context, int textViewResourceId,
-                           ArrayList<String> ssid, ArrayList<String> bssid) {
+                           ArrayList<String> ssid, ArrayList<String> bssid, ArrayList<String> sec) {
         super(context, textViewResourceId, ssid);
 
         ssid.clear();
@@ -43,6 +44,7 @@ public class WifiListAdapter extends ArrayAdapter {
 
         this.ssid = ssid;
         this.bssid = bssid;
+        this.sec = sec;
     }
 
     @Override
@@ -50,6 +52,7 @@ public class WifiListAdapter extends ArrayAdapter {
         View v = convertView;
         String currentSsid = ssid.get(position);
         String currentBssid = bssid.get(position);
+        String currentSec = sec.get(position);
 
         if (v == null) {
             LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -64,7 +67,7 @@ public class WifiListAdapter extends ArrayAdapter {
 
         ssidText.setText(currentSsid);
         if (!currentBssid.equals(""))
-            bssidText.setText("BSSID: " + currentBssid);
+            bssidText.setText(currentSec + " / BSSID: " + currentBssid);
         return v;
     }
 }

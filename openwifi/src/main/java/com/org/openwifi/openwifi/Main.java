@@ -58,6 +58,7 @@ public class Main extends Activity {
     private ListView wifiList;
     private ArrayList<String> wifiNames = new ArrayList<String>();
     private ArrayList<String> macNames = new ArrayList<String>();
+    private ArrayList<String> wifiSec = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,7 @@ public class Main extends Activity {
 
         wifi = (WifiManager) getSystemService(this.WIFI_SERVICE);
 
-        adapter = new WifiListAdapter(this, R.id.withText, wifiNames, macNames);
+        adapter = new WifiListAdapter(this, R.id.withText, wifiNames, macNames, wifiSec);
         wifiList.setAdapter(adapter);
 
         wifiSelect();
@@ -182,19 +183,23 @@ public class Main extends Activity {
     private void noWifi() {
         wifiNames.clear();
         macNames.clear();
+        wifiSec.clear();
 
         wifiNames.add(getString(R.string.no_networks));
         macNames.add("");
+        wifiSec.add("");
         adapter.notifyDataSetChanged();
     }
 
     private void getWifiNames() {
         wifiNames.clear();
         macNames.clear();
+        wifiSec.clear();
 
         for (int i = 0; i < results.size(); i++) {
             wifiNames.add(results.get(i).SSID);
             macNames.add(results.get(i).BSSID);
+            wifiSec.add(getSecurityType(results.get(i).capabilities));
         }
     }
 
