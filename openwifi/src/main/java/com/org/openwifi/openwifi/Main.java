@@ -122,7 +122,7 @@ public class Main extends Activity {
 
         AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DiscDialog));
         alert.setTitle(wifiNames.get(pos))
-                .setMessage(getString(R.string.enter_pass))
+                .setMessage(getString(R.string.enter_pass) + " (" + getSecurityType(security) + "):")
                 .setView(boxFields)
                 .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
@@ -138,6 +138,15 @@ public class Main extends Activity {
                     }
                 })
                 .show();
+    }
+
+    private String getSecurityType(String sec) {
+        if (sec.contains("WPA"))
+            return "WPA/WPA2";
+        else if (sec.contains("WEP"))
+            return "WEP";
+        else
+            return "Open";
     }
 
     public void refresh() {
