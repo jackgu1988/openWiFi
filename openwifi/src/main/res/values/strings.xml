@@ -14,5 +14,6 @@
     <string name="enter_pass">Password</string>
     <string name="show_pass">Show password</string>
     <string name="no_networks">No networks available!</string>
+    <string name="connecting">Connecting...</string>
 
 </resources>

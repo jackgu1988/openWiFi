@@ -60,6 +60,8 @@ public class Main extends Activity {
     private ArrayList<String> macNames = new ArrayList<String>();
     private ArrayList<String> wifiSec = new ArrayList<String>();
 
+    private Connector connector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +79,8 @@ public class Main extends Activity {
         adapter = new WifiListAdapter(this, R.id.withText, wifiNames, macNames, wifiSec);
         wifiList.setAdapter(adapter);
 
+        connector = new Connector(this);
+
         wifiSelect();
         scanWifi();
     }
@@ -91,9 +95,9 @@ public class Main extends Activity {
         });
     }
 
-    private void connectionDialog(int pos) {
+    private void connectionDialog(final int pos) {
 
-        String security = results.get(pos).capabilities;
+        final String security = results.get(pos).capabilities;
 
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -107,8 +111,10 @@ public class Main extends Activity {
 
         LinearLayout boxFields = new LinearLayout(this);
         boxFields.setOrientation(LinearLayout.VERTICAL);
-        boxFields.addView(input);
-        boxFields.addView(showPass);
+        if (getSecurityTypeAsInt(security) != 0) {
+            boxFields.addView(input);
+            boxFields.addView(showPass);
+        }
 
         showPass.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,12 +129,14 @@ public class Main extends Activity {
 
         AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DiscDialog));
         alert.setTitle(wifiNames.get(pos))
-                .setMessage(getString(R.string.enter_pass) + " (" + getSecurityType(security) + "):")
+                .setMessage((getSecurityTypeAsInt(security) != 0) ? getString(R.string.enter_pass) + " (" + getSecurityType(security) + "):" : getSecurityType(security))
                 .setView(boxFields)
                 .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String pass = input.getText().toString();
+                        Toast.makeText(getApplicationContext(), getString(R.string.connecting), Toast.LENGTH_LONG).show();
+                        connector.connectToAp(wifiNames.get(pos), pass, getSecurityTypeAsInt(security));
                         return;
                     }
                 })
@@ -139,6 +147,15 @@ public class Main extends Activity {
                     }
                 })
                 .show();
+    }
+
+    private int getSecurityTypeAsInt(String sec) {
+        if (sec.contains("WPA"))
+            return 2;
+        else if (sec.contains("WEP"))
+            return 1;
+        else
+            return 0;
     }
 
     private String getSecurityType(String sec) {
