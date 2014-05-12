@@ -27,8 +27,10 @@ import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -97,6 +99,8 @@ public class Main extends Activity {
 
     private void connectionDialog(final int pos) {
 
+        final AlertDialog alertConnect;
+
         final String security = results.get(pos).capabilities;
 
         final EditText input = new EditText(this);
@@ -131,7 +135,7 @@ public class Main extends Activity {
         alert.setTitle(wifiNames.get(pos))
                 .setMessage((getSecurityTypeAsInt(security) != 0) ? getString(R.string.enter_pass) + " (" + getSecurityType(security) + "):" : getSecurityType(security))
                 .setView(boxFields)
-                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.connect), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String pass = input.getText().toString();
@@ -145,8 +149,43 @@ public class Main extends Activity {
                     public void onClick(DialogInterface dialog, int which) {
                         return;
                     }
-                })
-                .show();
+                });
+
+
+        alertConnect = alert.create();
+        alertConnect.setOnShowListener(new DialogInterface.OnShowListener() {
+
+            @Override
+            public void onShow(DialogInterface dialog) {
+                if (getSecurityTypeAsInt(security) == 2 && input.getText().length() < 8)
+                    alertConnect.getButton(BUTTON_POSITIVE).setEnabled(false);
+            }
+        });
+
+        input.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (getSecurityTypeAsInt(security) == 2)
+                    if (input.getText().length() >= 8)
+                        alertConnect.getButton(BUTTON_POSITIVE).setEnabled(true);
+                    else
+                        alertConnect.getButton(BUTTON_POSITIVE).setEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        alertConnect.show();
+
     }
 
     private int getSecurityTypeAsInt(String sec) {

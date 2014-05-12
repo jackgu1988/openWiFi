@@ -15,5 +15,6 @@
     <string name="show_pass">Show password</string>
     <string name="no_networks">No networks available!</string>
     <string name="connecting">Connecting...</string>
+    <string name="connect">Connect</string>
 
 </resources>
