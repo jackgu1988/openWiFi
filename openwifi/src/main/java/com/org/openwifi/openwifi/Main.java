@@ -189,7 +189,9 @@ public class Main extends Activity {
     }
 
     private int getSecurityTypeAsInt(String sec) {
-        if (sec.contains("WPA"))
+        if (sec.contains("WPA2"))
+            return 3;
+        else if (sec.contains("WPA"))
             return 2;
         else if (sec.contains("WEP"))
             return 1;
@@ -198,8 +200,10 @@ public class Main extends Activity {
     }
 
     private String getSecurityType(String sec) {
-        if (sec.contains("WPA"))
-            return "WPA/WPA2";
+        if (sec.contains("WPA2"))
+            return "WPA2";
+        else if (sec.contains("WPA"))
+            return "WPA";
         else if (sec.contains("WEP"))
             return "WEP";
         else

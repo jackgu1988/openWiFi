@@ -18,6 +18,8 @@
 package com.org.openwifi.openwifi;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 
@@ -30,6 +32,7 @@ public class Connector {
 
     private Context context;
     private WifiConfiguration wifi;
+    private WifiManager mgr;
 
     /**
      * @param context
@@ -58,13 +61,17 @@ public class Connector {
                 wep(pass);
                 break;
             case 2:
-                wpa(pass);
+                wpa(pass, 2);
+                break;
+            case 3:
+                wpa(pass, 3);
                 break;
             default:
                 return false;
         }
 
-        WifiManager mgr = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        mgr = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        mgr.saveConfiguration();
         mgr.addNetwork(wifi);
 
         List<WifiConfiguration> list = mgr.getConfiguredNetworks();
@@ -72,9 +79,7 @@ public class Connector {
             if (i.SSID != null && i.SSID.equals("\"" + ssid + "\"")) {
                 mgr.disconnect();
                 mgr.enableNetwork(i.networkId, true);
-                mgr.reconnect();
-
-                break;
+                connectToNetwork();
             }
         }
 
@@ -92,7 +97,41 @@ public class Connector {
         wifi.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
     }
 
-    private void wpa(String pass) {
+    private void wpa(String pass, int type) {
         wifi.preSharedKey = "\"" + pass + "\"";
+        wifi.hiddenSSID = true;
+        wifi.status = WifiConfiguration.Status.ENABLED;
+        wifi.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+        wifi.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+        wifi.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+        wifi.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+        wifi.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+        if (type == 3)
+            wifi.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+        else
+            wifi.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+    }
+
+    private void connectToNetwork() {
+
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final NetworkInfo netInfo = cm.getNetworkInfo(0);
+
+        new Thread() {
+            @Override
+            public void run() {
+
+                while (netInfo != null && netInfo.getState() == NetworkInfo.State.CONNECTED) {
+                    try {
+
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                mgr.reconnect();
+            }
+        }.start();
     }
 }
