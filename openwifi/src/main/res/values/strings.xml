@@ -16,5 +16,7 @@
     <string name="no_networks">No networks available!</string>
     <string name="connecting">Connecting...</string>
     <string name="connect">Connect</string>
+    <string name="forget">Forget network</string>
+    <string name="modify">Modify network</string>
 
 </resources>

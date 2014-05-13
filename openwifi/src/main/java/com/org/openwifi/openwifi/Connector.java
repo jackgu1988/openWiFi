@@ -134,4 +134,27 @@ public class Connector {
             }
         }.start();
     }
+
+    /**
+     * Checks if the target network has already been configured
+     *
+     * @param SSID the SSID of the target network
+     * @return true if it has already been configured
+     */
+    public boolean checkIfExists(String SSID) {
+        mgr = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        List<WifiConfiguration> list = mgr.getConfiguredNetworks();
+        for (WifiConfiguration i : list)
+            if (i.SSID.equals("\"" + SSID + "\""))
+                return true;
+        return false;
+    }
+
+    /**
+     * @param SSID
+     * @return
+     */
+    public boolean forgetNetwork(String SSID) {
+        return true;
+    }
 }

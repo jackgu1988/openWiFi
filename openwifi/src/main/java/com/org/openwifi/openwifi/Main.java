@@ -28,6 +28,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
@@ -39,6 +40,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -52,10 +54,11 @@ import static android.content.DialogInterface.BUTTON_POSITIVE;
 
 public class Main extends Activity {
 
+    private final int FORGET_NETWORK_POSITION = 0;
+    private final int MODIFY_NETWORK_POSITION = 1;
     private CheckBox understand;
     private AlertDialog acceptD;
     private boolean firstrun;
-
     private List<ScanResult> results;
     private WifiManager wifi;
     private WifiListAdapter adapter;
@@ -64,7 +67,6 @@ public class Main extends Activity {
     private ArrayList<String> wifiNames = new ArrayList<String>();
     private ArrayList<String> macNames = new ArrayList<String>();
     private ArrayList<String> wifiSec = new ArrayList<String>();
-
     private Connector connector;
 
     @Override
@@ -101,6 +103,62 @@ public class Main extends Activity {
                 connectionDialog(position);
             }
         });
+
+        wifiList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                                           int position, long id) {
+
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(250);
+                if (connector.checkIfExists(wifiNames.get(position)))
+                    networkLongPress(position);
+                else
+                    connectionDialog(position);
+
+                return true;
+            }
+        });
+    }
+
+    private void networkLongPress(final int pos) {
+
+        final AlertDialog alertConnect;
+
+        ArrayList<String> options = new ArrayList<String>();
+        options.add(getString(R.string.forget));
+        options.add(getString(R.string.modify));
+
+        ArrayAdapter<String> optionAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, options);
+
+        ListView optionList = new ListView(this);
+        optionList.setAdapter(optionAdapter);
+        optionList.setBackgroundColor(0xFF000000);
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DiscDialog));
+        alert.setTitle(wifiNames.get(pos))
+                .setView(optionList);
+
+        alertConnect = alert.create();
+
+        optionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                switch (position) {
+                    case MODIFY_NETWORK_POSITION:
+                        connectionDialog(position);
+                        break;
+                    case FORGET_NETWORK_POSITION:
+                        connector.forgetNetwork(wifiNames.get(position));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
+        alertConnect.show();
+
     }
 
     private void connectionDialog(final int pos) {
@@ -247,6 +305,7 @@ public class Main extends Activity {
             @Override
             public void onReceive(Context c, Intent intent) {
                 results = wifi.getScanResults();
+
                 getWifiNames();
                 adapter.notifyDataSetChanged();
                 if (results.size() == 0)
@@ -347,4 +406,5 @@ public class Main extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
