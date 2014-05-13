@@ -152,13 +152,13 @@ public class Main extends Activity {
                     }
                 });
 
-
         alertConnect = alert.create();
         alertConnect.setOnShowListener(new DialogInterface.OnShowListener() {
 
             @Override
             public void onShow(DialogInterface dialog) {
-                if (getSecurityTypeAsInt(security) == 2 && input.getText().length() < 8)
+                if ((getSecurityTypeAsInt(security) == 2 || getSecurityTypeAsInt(security) == 3)
+                        && input.getText().length() < 8)
                     alertConnect.getButton(BUTTON_POSITIVE).setEnabled(false);
             }
         });
@@ -172,7 +172,7 @@ public class Main extends Activity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (getSecurityTypeAsInt(security) == 2)
+                if (getSecurityTypeAsInt(security) == 2 || getSecurityTypeAsInt(security) == 3)
                     if (input.getText().length() >= 8)
                         alertConnect.getButton(BUTTON_POSITIVE).setEnabled(true);
                     else
