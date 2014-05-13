@@ -25,6 +25,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
@@ -59,6 +60,7 @@ public class Main extends Activity {
     private WifiManager wifi;
     private WifiListAdapter adapter;
     private ListView wifiList;
+    private WifiInfo wifiInfo;
     private ArrayList<String> wifiNames = new ArrayList<String>();
     private ArrayList<String> macNames = new ArrayList<String>();
     private ArrayList<String> wifiSec = new ArrayList<String>();
@@ -79,7 +81,10 @@ public class Main extends Activity {
 
         wifi = (WifiManager) getSystemService(this.WIFI_SERVICE);
 
-        adapter = new WifiListAdapter(this, R.id.withText, wifiNames, macNames, wifiSec);
+        wifiInfo = wifi.getConnectionInfo();
+
+        adapter = new WifiListAdapter(this, R.id.withText, wifiNames, macNames, wifiSec,
+                wifiInfo.getSSID(), wifiInfo.getBSSID());
         wifiList.setAdapter(adapter);
 
         connector = new Connector(this);
