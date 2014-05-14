@@ -36,11 +36,10 @@ public class WifiListAdapter extends ArrayAdapter {
     private ArrayList<String> sec;
 
     private String currentSSID;
-    private String currentBSSID;
 
     public WifiListAdapter(Context context, int textViewResourceId,
                            ArrayList<String> ssid, ArrayList<String> bssid, ArrayList<String> sec,
-                           String currentSSID, String currentBSSID) {
+                           String currentSSID) {
         super(context, textViewResourceId, ssid);
 
         ssid.clear();
@@ -50,7 +49,6 @@ public class WifiListAdapter extends ArrayAdapter {
         this.bssid = bssid;
         this.sec = sec;
         this.currentSSID = currentSSID;
-        this.currentBSSID = currentBSSID;
     }
 
     @Override

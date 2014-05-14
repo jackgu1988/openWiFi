@@ -35,7 +35,7 @@ public class Connector {
     private WifiManager mgr;
 
     /**
-     * @param context
+     * @param context the context of the app
      */
     public Connector(Context context) {
         this.context = context;
@@ -151,10 +151,22 @@ public class Connector {
     }
 
     /**
-     * @param SSID
-     * @return
+     * Removes a network
+     *
+     * @param SSID the SSID of the target network
+     * @return true if network is removed
      */
     public boolean forgetNetwork(String SSID) {
-        return true;
+
+        List<WifiConfiguration> list = mgr.getConfiguredNetworks();
+        for (WifiConfiguration i : list) {
+            if (i.SSID != null && i.SSID.equals("\"" + SSID + "\"")) {
+                mgr.removeNetwork(i.networkId);
+                mgr.saveConfiguration();
+                return true;
+            }
+        }
+
+        return false;
     }
 }

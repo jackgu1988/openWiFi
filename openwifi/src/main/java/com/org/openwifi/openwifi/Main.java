@@ -58,12 +58,10 @@ public class Main extends Activity {
     private final int MODIFY_NETWORK_POSITION = 1;
     private CheckBox understand;
     private AlertDialog acceptD;
-    private boolean firstrun;
     private List<ScanResult> results;
     private WifiManager wifi;
     private WifiListAdapter adapter;
     private ListView wifiList;
-    private WifiInfo wifiInfo;
     private ArrayList<String> wifiNames = new ArrayList<String>();
     private ArrayList<String> macNames = new ArrayList<String>();
     private ArrayList<String> wifiSec = new ArrayList<String>();
@@ -74,19 +72,19 @@ public class Main extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        firstrun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("firstrun", true);
+        boolean firstrun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("firstrun", true);
         if (firstrun) {
             showDisclaimer();
         }
 
         wifiList = (ListView) findViewById(R.id.wifiList);
 
-        wifi = (WifiManager) getSystemService(this.WIFI_SERVICE);
+        wifi = (WifiManager) getSystemService(WIFI_SERVICE);
 
-        wifiInfo = wifi.getConnectionInfo();
+        WifiInfo wifiInfo = wifi.getConnectionInfo();
 
         adapter = new WifiListAdapter(this, R.id.withText, wifiNames, macNames, wifiSec,
-                wifiInfo.getSSID(), wifiInfo.getBSSID());
+                wifiInfo.getSSID());
         wifiList.setAdapter(adapter);
 
         connector = new Connector(this);
@@ -129,7 +127,7 @@ public class Main extends Activity {
         options.add(getString(R.string.forget));
         options.add(getString(R.string.modify));
 
-        ArrayAdapter<String> optionAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, options);
+        ArrayAdapter<String> optionAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, options);
 
         ListView optionList = new ListView(this);
         optionList.setAdapter(optionAdapter);
@@ -147,9 +145,13 @@ public class Main extends Activity {
                 switch (position) {
                     case MODIFY_NETWORK_POSITION:
                         connectionDialog(position);
+                        alertConnect.dismiss();
                         break;
                     case FORGET_NETWORK_POSITION:
-                        connector.forgetNetwork(wifiNames.get(position));
+                        if (connector.forgetNetwork(wifiNames.get(position)))
+                            alertConnect.dismiss();
+                        else
+                            Toast.makeText(getApplicationContext(), getString(R.string.forget_fail), Toast.LENGTH_LONG).show();
                         break;
                     default:
                         break;
@@ -205,13 +207,11 @@ public class Main extends Activity {
                         String pass = input.getText().toString();
                         Toast.makeText(getApplicationContext(), getString(R.string.connecting), Toast.LENGTH_LONG).show();
                         connector.connectToAp(wifiNames.get(pos), pass, getSecurityTypeAsInt(security));
-                        return;
                     }
                 })
                 .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        return;
                     }
                 });
 
@@ -330,10 +330,10 @@ public class Main extends Activity {
         macNames.clear();
         wifiSec.clear();
 
-        for (int i = 0; i < results.size(); i++) {
-            wifiNames.add(results.get(i).SSID);
-            macNames.add(results.get(i).BSSID);
-            wifiSec.add(getSecurityType(results.get(i).capabilities));
+        for (ScanResult result : results) {
+            wifiNames.add(result.SSID);
+            macNames.add(result.BSSID);
+            wifiSec.add(getSecurityType(result.capabilities));
         }
     }
 
