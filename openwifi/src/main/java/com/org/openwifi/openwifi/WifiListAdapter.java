@@ -17,6 +17,7 @@
 
 package com.org.openwifi.openwifi;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 /**
  * Created by jack gurulian
  */
-public class WifiListAdapter extends ArrayAdapter {
+public class WifiListAdapter extends ArrayAdapter<String> {
 
     private ArrayList<String> ssid;
     private ArrayList<String> bssid;
@@ -51,6 +52,7 @@ public class WifiListAdapter extends ArrayAdapter {
         this.currentSSID = currentSSID;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
