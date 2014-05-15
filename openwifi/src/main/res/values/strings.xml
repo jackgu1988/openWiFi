@@ -19,5 +19,6 @@
     <string name="forget">Forget network</string>
     <string name="modify">Modify network</string>
     <string name="forget_fail">Failed to forget network…</string>
+    <string name="advanced">Advanced settings</string>
 
 </resources>

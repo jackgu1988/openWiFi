@@ -17,6 +17,7 @@
 
 package com.org.openwifi.openwifi;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -52,7 +53,7 @@ import java.util.List;
 
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 
-public class Main extends Activity {
+public class MainActivity extends Activity {
 
     private final int FORGET_NETWORK_POSITION = 0;
     private final int MODIFY_NETWORK_POSITION = 1;
@@ -66,6 +67,7 @@ public class Main extends Activity {
     private ArrayList<String> macNames = new ArrayList<String>();
     private ArrayList<String> wifiSec = new ArrayList<String>();
     private Connector connector;
+    private BroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,11 +181,18 @@ public class Main extends Activity {
         showPass.callOnClick();
         showPass.setTextColor(0xFF000000);
 
+        final CheckBox advanced = new CheckBox(this);
+        advanced.setSelected(false);
+        advanced.setText(getString(R.string.advanced));
+        advanced.callOnClick();
+        advanced.setTextColor(0xFF000000);
+
         LinearLayout boxFields = new LinearLayout(this);
         boxFields.setOrientation(LinearLayout.VERTICAL);
         if (getSecurityTypeAsInt(security) != 0) {
             boxFields.addView(input);
             boxFields.addView(showPass);
+            boxFields.addView(advanced);
         }
 
         showPass.setOnClickListener(new View.OnClickListener() {
@@ -301,7 +310,7 @@ public class Main extends Activity {
 
         wifi.startScan();
 
-        registerReceiver(new BroadcastReceiver() {
+        registerReceiver(receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context c, Intent intent) {
                 results = wifi.getScanResults();
@@ -337,6 +346,7 @@ public class Main extends Activity {
         }
     }
 
+    @SuppressLint("InflateParams")
     private void showDisclaimer() {
         AlertDialog.Builder disclaimer = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DiscDialog));
 
@@ -405,6 +415,17 @@ public class Main extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStop() {
+        unregisterReceiver(receiver);
+        super.onStop();
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
 }
