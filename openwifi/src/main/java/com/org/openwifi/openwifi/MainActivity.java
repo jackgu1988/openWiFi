@@ -41,7 +41,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -55,8 +54,6 @@ import static android.content.DialogInterface.BUTTON_POSITIVE;
 
 public class MainActivity extends Activity {
 
-    private final int FORGET_NETWORK_POSITION = 0;
-    private final int MODIFY_NETWORK_POSITION = 1;
     private CheckBox understand;
     private AlertDialog acceptD;
     private List<ScanResult> results;
@@ -121,47 +118,11 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void networkLongPress(final int pos) {
+    private void networkLongPress(int pos) {
 
-        final AlertDialog alertConnect;
-
-        ArrayList<String> options = new ArrayList<String>();
-        options.add(getString(R.string.forget));
-        options.add(getString(R.string.modify));
-
-        ArrayAdapter<String> optionAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, options);
-
-        ListView optionList = new ListView(this);
-        optionList.setAdapter(optionAdapter);
-        optionList.setBackgroundColor(0xFF000000);
-
-        AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DiscDialog));
-        alert.setTitle(wifiNames.get(pos))
-                .setView(optionList);
-
-        alertConnect = alert.create();
-
-        optionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-                switch (position) {
-                    case MODIFY_NETWORK_POSITION:
-                        connectionDialog(position);
-                        alertConnect.dismiss();
-                        break;
-                    case FORGET_NETWORK_POSITION:
-                        if (connector.forgetNetwork(wifiNames.get(position)))
-                            alertConnect.dismiss();
-                        else
-                            Toast.makeText(getApplicationContext(), getString(R.string.forget_fail), Toast.LENGTH_LONG).show();
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-
-        alertConnect.show();
+        LongPressDialogue alert = new LongPressDialogue(this, wifiNames.get(pos), connector, results, pos);
+        alert.build();
+        alert.showAlert();
 
     }
 
