@@ -49,9 +49,6 @@ public class LongPressDialogue extends Dialogue implements IDialogue {
         this.pos = pos;
     }
 
-    /**
-     * Builds the alert dialogue, without presenting it
-     */
     @Override
     public void build() {
 
@@ -68,25 +65,16 @@ public class LongPressDialogue extends Dialogue implements IDialogue {
         keyListener(optionList);
     }
 
-    /**
-     * Presents the alert dialogue
-     */
     @Override
     public void showAlert() {
         alertConnect.show();
     }
 
-    /**
-     * Hides the alert dialogue, without dismissing it
-     */
     @Override
     public void hideAlert() {
         alertConnect.hide();
     }
 
-    /**
-     * Dismisses the alert dialogue
-     */
     @Override
     public void dismissAlert() {
         alertConnect.dismiss();
