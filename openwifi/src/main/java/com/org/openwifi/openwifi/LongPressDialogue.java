@@ -9,13 +9,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.org.openwifi.interfaces.IDialogue;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by jack gurulian.
  */
-public class LongPressDialogue extends Dialogue {
+public class LongPressDialogue extends Dialogue implements IDialogue {
 
     private final int FORGET_NETWORK_POSITION = 0;
     private final int MODIFY_NETWORK_POSITION = 1;
@@ -50,6 +52,7 @@ public class LongPressDialogue extends Dialogue {
     /**
      * Builds the alert dialogue, without presenting it
      */
+    @Override
     public void build() {
 
         ArrayAdapter<String> optionAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, buildOptions());
@@ -68,6 +71,7 @@ public class LongPressDialogue extends Dialogue {
     /**
      * Presents the alert dialogue
      */
+    @Override
     public void showAlert() {
         alertConnect.show();
     }
@@ -75,6 +79,7 @@ public class LongPressDialogue extends Dialogue {
     /**
      * Hides the alert dialogue, without dismissing it
      */
+    @Override
     public void hideAlert() {
         alertConnect.hide();
     }
@@ -82,6 +87,7 @@ public class LongPressDialogue extends Dialogue {
     /**
      * Dismisses the alert dialogue
      */
+    @Override
     public void dismissAlert() {
         alertConnect.dismiss();
     }
