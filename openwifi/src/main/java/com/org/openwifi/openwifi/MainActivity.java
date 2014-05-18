@@ -30,20 +30,14 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.text.Editable;
 import android.text.Html;
-import android.text.InputType;
-import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -71,7 +65,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        boolean firstrun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("firstrun", true);
+        boolean firstrun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("firstrun",
+                true);
         if (firstrun) {
             showDisclaimer();
         }
@@ -119,138 +114,17 @@ public class MainActivity extends Activity {
     }
 
     private void networkLongPress(int pos) {
-
-        LongPressDialogue alert = new LongPressDialogue(this, wifiNames.get(pos), connector, results, pos);
+        LongPressDialogue alert = new LongPressDialogue(this, wifiNames.get(pos), connector,
+                results, pos);
         alert.build();
         alert.showAlert();
-
     }
 
-    private void connectionDialog(final int pos) {
-
-        final AlertDialog alertConnect;
-
-        final String security = results.get(pos).capabilities;
-
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        input.setTextColor(0xFF000000);
-
-        final CheckBox showPass = new CheckBox(this);
-        showPass.setSelected(false);
-        showPass.setText(getString(R.string.show_pass));
-        showPass.callOnClick();
-        showPass.setTextColor(0xFF000000);
-
-        final CheckBox advanced = new CheckBox(this);
-        advanced.setSelected(false);
-        advanced.setText(getString(R.string.advanced));
-        advanced.callOnClick();
-        advanced.setTextColor(0xFF000000);
-
-        LinearLayout boxFields = new LinearLayout(this);
-        boxFields.setOrientation(LinearLayout.VERTICAL);
-        if (getSecurityTypeAsInt(security) != 0) {
-            boxFields.addView(input);
-            boxFields.addView(showPass);
-            boxFields.addView(advanced);
-        }
-
-        showPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (((CheckBox) v).isChecked()) {
-                    input.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-                } else {
-                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                }
-            }
-        });
-
-        AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DiscDialog));
-        alert.setTitle(wifiNames.get(pos))
-                .setMessage((getSecurityTypeAsInt(security) != 0) ? getString(R.string.enter_pass) + " (" + getSecurityType(security) + "):" : getSecurityType(security))
-                .setView(boxFields)
-                .setPositiveButton(getString(R.string.connect), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String pass = input.getText().toString();
-                        Toast.makeText(getApplicationContext(), getString(R.string.connecting), Toast.LENGTH_LONG).show();
-                        connector.connectToAp(wifiNames.get(pos), pass, getSecurityTypeAsInt(security));
-                    }
-                })
-                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-
-        alertConnect = alert.create();
-        alertConnect.setOnShowListener(new DialogInterface.OnShowListener() {
-
-            @Override
-            public void onShow(DialogInterface dialog) {
-                if ((getSecurityTypeAsInt(security) == 2 || getSecurityTypeAsInt(security) == 3)
-                        && input.getText().length() < 8)
-                    alertConnect.getButton(BUTTON_POSITIVE).setEnabled(false);
-            }
-        });
-
-        input.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (getSecurityTypeAsInt(security) == 2 || getSecurityTypeAsInt(security) == 3)
-                    if (input.getText().length() >= 8)
-                        alertConnect.getButton(BUTTON_POSITIVE).setEnabled(true);
-                    else
-                        alertConnect.getButton(BUTTON_POSITIVE).setEnabled(false);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
-        input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    alertConnect.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-                }
-            }
-        });
-
-        alertConnect.show();
-
-    }
-
-    private int getSecurityTypeAsInt(String sec) {
-        if (sec.contains("WPA2"))
-            return 3;
-        else if (sec.contains("WPA"))
-            return 2;
-        else if (sec.contains("WEP"))
-            return 1;
-        else
-            return 0;
-    }
-
-    private String getSecurityType(String sec) {
-        if (sec.contains("WPA2"))
-            return "WPA2";
-        else if (sec.contains("WPA"))
-            return "WPA";
-        else if (sec.contains("WEP"))
-            return "WEP";
-        else
-            return "Open";
+    private void connectionDialog(int pos) {
+        ConnectionDialogue alert = new ConnectionDialogue(this, wifiNames.get(pos), connector,
+                results, pos);
+        alert.build();
+        alert.showAlert();
     }
 
     public void refresh() {
@@ -260,7 +134,8 @@ public class MainActivity extends Activity {
     private void scanWifi() {
 
         if (!wifi.isWifiEnabled()) {
-            Toast.makeText(getApplicationContext(), getString(R.string.wifi_off), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.wifi_off),
+                    Toast.LENGTH_LONG).show();
             noWifi();
         } else
             scan();
@@ -307,9 +182,21 @@ public class MainActivity extends Activity {
         }
     }
 
+    private String getSecurityType(String sec) {
+        if (sec.contains("WPA2"))
+            return "WPA2";
+        else if (sec.contains("WPA"))
+            return "WPA";
+        else if (sec.contains("WEP"))
+            return "WEP";
+        else
+            return "Open";
+    }
+
     @SuppressLint("InflateParams")
     private void showDisclaimer() {
-        AlertDialog.Builder disclaimer = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DiscDialog));
+        AlertDialog.Builder disclaimer = new AlertDialog.Builder(new ContextThemeWrapper(this,
+                R.style.DiscDialog));
 
         LayoutInflater accept = LayoutInflater.from(this);
         View acceptLayout = accept.inflate(R.layout.checkbox, null);
@@ -319,7 +206,8 @@ public class MainActivity extends Activity {
         disclaimer
                 .setView(acceptLayout)
                 .setIcon(android.R.drawable.ic_dialog_alert).setTitle(getString(R.string.disclaimer))
-                .setMessage(Html.fromHtml(getString(R.string.disc_msg)))
+                .setMessage(
+                        Html.fromHtml(getString(R.string.disc_msg)))
                 .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

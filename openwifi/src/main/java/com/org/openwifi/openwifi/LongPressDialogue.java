@@ -6,6 +6,7 @@ import android.net.wifi.ScanResult;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -52,13 +53,17 @@ public class LongPressDialogue extends Dialogue implements IDialogue {
     @Override
     public void build() {
 
-        ArrayAdapter<String> optionAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, buildOptions());
+        ArrayAdapter<String> optionAdapter = new ArrayAdapter<String>(context,
+                android.R.layout.simple_list_item_1, buildOptions());
 
         ListView optionList = new ListView(context);
         optionList.setAdapter(optionAdapter);
         optionList.setBackgroundColor(0xFF000000);
 
-        this.createDialogue(wifiName, null, optionList);
+        LinearLayout options = new LinearLayout(context);
+        options.addView(optionList);
+
+        this.createDialogue(wifiName, null, options);
 
         alertConnect = this.createAlert();
 
@@ -94,14 +99,18 @@ public class LongPressDialogue extends Dialogue implements IDialogue {
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 switch (position) {
                     case MODIFY_NETWORK_POSITION:
-                        // ConnectionDialogue conDial = new ConnectionDialogue();
+                        ConnectionDialogue conDial = new ConnectionDialogue(context, wifiName,
+                                connector, results, pos);
+                        conDial.build();
+                        conDial.showAlert();
                         dismissAlert();
                         break;
                     case FORGET_NETWORK_POSITION:
                         if (connector.forgetNetwork(wifiName))
                             dismissAlert();
                         else
-                            Toast.makeText(context, context.getString(R.string.forget_fail), Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, context.getString(R.string.forget_fail),
+                                    Toast.LENGTH_LONG).show();
                         break;
                     default:
                         break;
