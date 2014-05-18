@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -57,6 +58,8 @@ public class LongPressDialogue extends Dialogue implements IDialogue {
                 android.R.layout.simple_list_item_1, buildOptions());
 
         ListView optionList = new ListView(context);
+        optionList.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
         optionList.setAdapter(optionAdapter);
         optionList.setBackgroundColor(0xFF000000);
 
@@ -94,6 +97,7 @@ public class LongPressDialogue extends Dialogue implements IDialogue {
     }
 
     private void keyListener(ListView optionList) {
+
         optionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
