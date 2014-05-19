@@ -274,7 +274,7 @@ public class MainActivity extends Activity {
     protected void onStop() {
         try {
             unregisterReceiver(receiver);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException ignored) {
 
         }
         super.onStop();

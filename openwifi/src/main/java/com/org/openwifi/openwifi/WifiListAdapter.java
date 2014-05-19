@@ -32,8 +32,6 @@ import java.util.ArrayList;
  */
 public class WifiListAdapter extends ArrayAdapter<String> {
 
-    private Context context;
-
     private ArrayList<String> ssid;
     private ArrayList<String> bssid;
     private ArrayList<String> sec;
