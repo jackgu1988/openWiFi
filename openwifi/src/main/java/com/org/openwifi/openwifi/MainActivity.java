@@ -41,6 +41,8 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.org.openwifi.settings.SettingsActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -262,6 +264,8 @@ public class MainActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         } else if (id == R.id.action_refresh) {
             refresh();

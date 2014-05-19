@@ -20,5 +20,8 @@
     <string name="modify">Modify network</string>
     <string name="forget_fail">Failed to forget network…</string>
     <string name="advanced">Advanced settings</string>
+    <string name="servers">Servers</string>
+    <string name="auto_connect_pref">Connect automatically to open WiFis</string>
+    <string name="auto_connect_pref_desc">Connects automatically when a WiFi that can be accessed is detected</string>
 
 </resources>
