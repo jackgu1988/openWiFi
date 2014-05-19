@@ -137,6 +137,7 @@ public class MainActivity extends Activity {
             Toast.makeText(getApplicationContext(), getString(R.string.wifi_off),
                     Toast.LENGTH_LONG).show();
             noWifi();
+            wifiList.setEnabled(false);
         } else
             scan();
     }
@@ -153,8 +154,11 @@ public class MainActivity extends Activity {
 
                 getWifiNames();
                 adapter.notifyDataSetChanged();
-                if (results.size() == 0)
+                wifiList.setEnabled(true);
+                if (results.size() == 0) {
                     noWifi();
+                    wifiList.setEnabled(false);
+                }
             }
         }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
     }
@@ -268,8 +272,17 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onStop() {
-        unregisterReceiver(receiver);
+        try {
+            unregisterReceiver(receiver);
+        } catch (IllegalArgumentException e) {
+
+        }
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        onStop();
     }
 
     @Override

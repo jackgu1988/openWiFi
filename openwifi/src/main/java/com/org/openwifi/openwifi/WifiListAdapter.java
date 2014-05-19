@@ -32,6 +32,8 @@ import java.util.ArrayList;
  */
 public class WifiListAdapter extends ArrayAdapter<String> {
 
+    private Context context;
+
     private ArrayList<String> ssid;
     private ArrayList<String> bssid;
     private ArrayList<String> sec;
@@ -75,7 +77,8 @@ public class WifiListAdapter extends ArrayAdapter<String> {
         if (!currentBssid.equals(""))
             bssidText.setText(currentSec + " / BSSID: " + currentBssid);
 
-        if (currentSSID.equals(currentSsid) && currentBssid.equals(currentBssid)) {
+        if (currentSsid != null && currentSSID != null
+                && currentSSID.equals(currentSsid) && currentBssid.equals(currentBssid)) {
             ssidText.setTextColor(0xFF0000FF);
             bssidText.setTextColor(0xFF0000FF);
         }
