@@ -10,7 +10,7 @@
         android:id="@+id/understand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="enableOK"
         android:text="@string/understand"
-        android:textColor="#000000"
-        android:onClick="enableOK"></CheckBox>
+        android:textColor="#000000" />
 </LinearLayout>

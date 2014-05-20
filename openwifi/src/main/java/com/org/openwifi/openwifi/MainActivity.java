@@ -18,7 +18,6 @@
 package com.org.openwifi.openwifi;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -30,6 +29,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -41,6 +41,7 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.org.openwifi.about.AboutDialogue;
 import com.org.openwifi.settings.SettingsActivity;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ import java.util.List;
 
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
 
     private CheckBox understand;
     private AlertDialog acceptD;
@@ -269,6 +270,9 @@ public class MainActivity extends Activity {
             return true;
         } else if (id == R.id.action_refresh) {
             refresh();
+            return true;
+        } else if (id == R.id.action_about) {
+            new AboutDialogue(this);
             return true;
         }
         return super.onOptionsItemSelected(item);

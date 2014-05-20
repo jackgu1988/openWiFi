@@ -61,12 +61,11 @@ public class LongPressDialogue extends Dialogue implements IDialogue {
         optionList.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         optionList.setAdapter(optionAdapter);
-        optionList.setBackgroundColor(0xFF000000);
 
         LinearLayout options = new LinearLayout(context);
         options.addView(optionList);
 
-        this.createDialogue(wifiName, null, options);
+        this.createDialogue(wifiName, null, options, 0);
 
         alertConnect = this.createAlert();
 

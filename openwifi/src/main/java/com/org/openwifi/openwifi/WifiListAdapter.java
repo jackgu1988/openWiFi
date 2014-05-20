@@ -61,7 +61,8 @@ public class WifiListAdapter extends ArrayAdapter<String> {
         String currentSec = sec.get(position);
 
         if (v == null) {
-            LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater vi = (LayoutInflater) getContext()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = vi.inflate(R.layout.wifi_adapter_layout, null);
         }
         TextView ssidText = (TextView) v.findViewById(R.id.ssid);
