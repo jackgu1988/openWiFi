@@ -94,7 +94,7 @@ public class ConnectionDialogue extends Dialogue implements IDialogue {
 
         LinearLayout boxFields = createLayout(security, showPass, input, advanced);
 
-        Builder alert = this.createDialogue(wifiName, (getSecurityTypeAsInt(security) != 1 ?
+        Builder alert = this.createDialogue(wifiName, (getSecurityTypeAsInt(security) != 0 ?
                 context.getString(R.string.enter_pass) : context.getString(R.string.open)), boxFields, 0)
                 .setPositiveButton(context.getString(R.string.connect), new OnClickListener() {
                     @Override
