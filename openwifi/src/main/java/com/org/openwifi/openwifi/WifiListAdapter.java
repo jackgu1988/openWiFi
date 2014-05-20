@@ -32,16 +32,21 @@ import java.util.ArrayList;
  */
 public class WifiListAdapter extends ArrayAdapter<String> {
 
+    private Context context;
+
     private ArrayList<String> ssid;
     private ArrayList<String> bssid;
     private ArrayList<String> sec;
 
     private String currentSSID;
+    private String currentBSSID;
 
     public WifiListAdapter(Context context, int textViewResourceId,
                            ArrayList<String> ssid, ArrayList<String> bssid, ArrayList<String> sec,
-                           String currentSSID) {
+                           String currentSSID, String currentBSSID) {
         super(context, textViewResourceId, ssid);
+
+        this.context = context;
 
         ssid.clear();
         bssid.clear();
@@ -50,6 +55,7 @@ public class WifiListAdapter extends ArrayAdapter<String> {
         this.bssid = bssid;
         this.sec = sec;
         this.currentSSID = currentSSID;
+        this.currentBSSID = currentBSSID;
     }
 
     @SuppressLint("InflateParams")
@@ -76,11 +82,11 @@ public class WifiListAdapter extends ArrayAdapter<String> {
         if (!currentBssid.equals(""))
             bssidText.setText(currentSec + " / BSSID: " + currentBssid);
 
-        if (currentSsid != null && currentSSID != null
-                && currentSSID.equals(currentSsid) && currentBssid.equals(currentBssid)) {
-            ssidText.setTextColor(0xFF0000FF);
-            bssidText.setTextColor(0xFF0000FF);
-        }
+        if (currentSsid != null && currentSSID != null && currentSSID.equals(currentSsid) &&
+                currentBSSID.equals(currentBssid))
+            ssidText.setTextColor(context.getResources().getColor(R.color.holo_blue));
+        else
+            ssidText.setTextColor(context.getResources().getColor(R.color.black));
         return v;
     }
 }

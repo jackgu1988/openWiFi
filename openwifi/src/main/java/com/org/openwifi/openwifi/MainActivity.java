@@ -85,7 +85,7 @@ public class MainActivity extends ActionBarActivity {
         WifiInfo wifiInfo = wifi.getConnectionInfo();
 
         adapter = new WifiListAdapter(this, R.id.withText, wifiNames, macNames, wifiSec,
-                wifiInfo.getSSID());
+                wifiInfo.getSSID(), wifiInfo.getBSSID());
         wifiList.setAdapter(adapter);
 
         connector = new Connector(this);
