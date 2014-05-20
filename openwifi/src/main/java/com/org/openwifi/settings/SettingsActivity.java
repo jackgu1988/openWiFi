@@ -1,7 +1,7 @@
 package com.org.openwifi.settings;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 
 import com.org.openwifi.openwifi.R;
@@ -9,7 +9,7 @@ import com.org.openwifi.openwifi.R;
 /**
  * Created by jack gurulian
  */
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,8 +19,10 @@ public class SettingsActivity extends Activity {
                 .replace(android.R.id.content, new SettingsFragment())
                 .commit();
 
-        if (getActionBar() != null)
-            getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        getSupportActionBar().setTitle(getString(R.string.app_name) + ": "
+                + getString(R.string.settings));
     }
 
     @Override

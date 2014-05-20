@@ -28,5 +28,6 @@
     <string name="about_title">About</string>
     <string name="about_text">Created by jackgu1988 and vladei. Licenced under GPLv3</string>
     <string name="open">Open</string>
+    <string name="settings">settings</string>
 
 </resources>
