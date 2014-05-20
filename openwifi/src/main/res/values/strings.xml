@@ -29,5 +29,6 @@
     <string name="about_text">Created by jackgu1988 and vladei. Licenced under GPLv3</string>
     <string name="open">Open</string>
     <string name="settings">settings</string>
+    <string name="wifi_networks">Wi-Fi networks</string>
 
 </resources>
