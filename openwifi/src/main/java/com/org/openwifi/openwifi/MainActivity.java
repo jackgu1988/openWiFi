@@ -36,6 +36,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
@@ -44,6 +45,7 @@ import android.widget.Toast;
 import com.org.openwifi.about.AboutDialogue;
 import com.org.openwifi.settings.SettingsActivity;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +69,8 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getOverflowMenu();
 
         boolean firstrun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("firstrun",
                 true);
@@ -299,4 +303,16 @@ public class MainActivity extends ActionBarActivity {
         finish();
     }
 
+    private void getOverflowMenu() {
+        try {
+            ViewConfiguration config = ViewConfiguration.get(this);
+            Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+            if (menuKeyField != null) {
+                menuKeyField.setAccessible(true);
+                menuKeyField.setBoolean(config, false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
