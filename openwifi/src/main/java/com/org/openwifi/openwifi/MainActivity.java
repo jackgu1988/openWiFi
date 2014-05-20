@@ -82,14 +82,6 @@ public class MainActivity extends ActionBarActivity {
 
         wifi = (WifiManager) getSystemService(WIFI_SERVICE);
 
-        WifiInfo wifiInfo = wifi.getConnectionInfo();
-
-        adapter = new WifiListAdapter(this, R.id.withText, wifiNames, macNames, wifiSec,
-                wifiInfo.getSSID(), wifiInfo.getBSSID());
-        wifiList.setAdapter(adapter);
-
-        connector = new Connector(this);
-
         wifiSelect();
         scanWifi();
     }
@@ -139,6 +131,14 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void scanWifi() {
+
+        WifiInfo wifiInfo = wifi.getConnectionInfo();
+
+        adapter = new WifiListAdapter(this, R.id.withText, wifiNames, macNames, wifiSec,
+                wifiInfo.getSSID(), wifiInfo.getBSSID());
+        wifiList.setAdapter(adapter);
+
+        connector = new Connector(this);
 
         if (!wifi.isWifiEnabled()) {
             Toast.makeText(getApplicationContext(), getString(R.string.wifi_off),
