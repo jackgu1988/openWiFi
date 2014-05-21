@@ -9,7 +9,6 @@
     <string name="ok">OK</string>
     <string name="understand">I agree</string>
     <string name="cancel">Cancel</string>
-    <string name="wifi_off">Please enable your WiFi.</string>
     <string name="scanning">Scanning…</string>
     <string name="enter_pass">Password:</string>
     <string name="show_pass">Show password</string>
@@ -30,5 +29,7 @@
     <string name="open">Open</string>
     <string name="settings">settings</string>
     <string name="wifi_networks">Wi-Fi networks</string>
+    <string name="turn_on_wifi">Turning on Wi-Fi</string>
+    <string name="please_wait">Please wait…</string>
 
 </resources>

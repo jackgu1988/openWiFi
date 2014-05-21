@@ -19,6 +19,7 @@ package com.org.openwifi.openwifi;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -39,11 +40,11 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.org.openwifi.about.AboutDialogue;
 import com.org.openwifi.settings.SettingsActivity;
@@ -71,6 +72,8 @@ public class MainActivity extends ActionBarActivity {
     private TextView scanning;
     private ProgressBar progress;
 
+    private ProgressDialog progDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +98,40 @@ public class MainActivity extends ActionBarActivity {
 
         wifiSelect();
         scanWifi();
+    }
+
+    private void onOffSwitchListener() {
+        onOffSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    wifi.setWifiEnabled(true);
+
+                    registerReceiver(receiver = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context c, Intent intent) {
+                            int state = wifi.getWifiState();
+
+                            if (state == WifiManager.WIFI_STATE_ENABLING) {
+                                progDialog = ProgressDialog.show(MainActivity.this,
+                                        getString(R.string.turn_on_wifi),
+                                        getString(R.string.please_wait), true);
+                            } else if (state == WifiManager.WIFI_STATE_ENABLED
+                                    || state == WifiManager.WIFI_STATE_DISABLED
+                                    || state == WifiManager.WIFI_STATE_UNKNOWN)
+                                progDialog.dismiss();
+
+                            if (state == WifiManager.WIFI_STATE_DISABLED
+                                    || state == WifiManager.WIFI_STATE_UNKNOWN)
+                                onOffSwitch.setChecked(false);
+
+                            scanWifi();
+                        }
+                    }, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
+                } else
+                    wifi.setWifiEnabled(false);
+            }
+        });
     }
 
     private void wifiSelect() {
@@ -152,8 +189,6 @@ public class MainActivity extends ActionBarActivity {
         connector = new Connector(this);
 
         if (!wifi.isWifiEnabled()) {
-            Toast.makeText(getApplicationContext(), getString(R.string.wifi_off),
-                    Toast.LENGTH_LONG).show();
             noWifi();
             wifiList.setEnabled(false);
         } else
@@ -278,6 +313,8 @@ public class MainActivity extends ActionBarActivity {
         onOffSwitch = (Switch) switchItem.getActionView();
 
         onOffSwitch.setChecked(wifi.isWifiEnabled());
+
+        onOffSwitchListener();
 
         return super.onCreateOptionsMenu(menu);
     }
