@@ -31,5 +31,7 @@
     <string name="wifi_networks">Wi-Fi networks</string>
     <string name="turn_on_wifi">Turning on Wi-Fi</string>
     <string name="please_wait">Please wait…</string>
+    <string name="connected">Connected</string>
+    <string name="secured">Secured</string>
 
 </resources>

@@ -19,6 +19,7 @@ package com.org.openwifi.openwifi;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,12 +81,17 @@ public class WifiListAdapter extends ArrayAdapter<String> {
 
         ssidText.setText(currentSsid);
         if (!currentBssid.equals(""))
-            bssidText.setText(currentSec + " / BSSID: " + currentBssid);
+            if (currentSec.equals("WPA") || currentSec.equals("WPA2") || currentSec.equals("WEP"))
+                bssidText.setText(Html.fromHtml(context.getString(R.string.secured)
+                        + " <i>(" + currentSec + ")</i>"));
+            else if (currentSec.equals("Open"))
+                bssidText.setText(context.getString(R.string.open));
 
         if (currentSsid != null && currentSSID != null && currentSSID.equals(currentSsid) &&
-                currentBSSID.equals(currentBssid))
+                currentBSSID.equals(currentBssid)) {
             ssidText.setTextColor(context.getResources().getColor(R.color.holo_blue));
-        else
+            bssidText.setText(context.getString(R.string.connected));
+        } else
             ssidText.setTextColor(context.getResources().getColor(R.color.black));
         return v;
     }
