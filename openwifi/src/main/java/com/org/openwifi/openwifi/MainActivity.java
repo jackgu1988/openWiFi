@@ -68,6 +68,7 @@ public class MainActivity extends ActionBarActivity {
     private ArrayList<String> wifiSec = new ArrayList<String>();
     private Connector connector;
     private BroadcastReceiver receiver;
+    private BroadcastReceiver wifiStateReceiver;
     private Switch onOffSwitch;
     private TextView scanning;
     private ProgressBar progress;
@@ -107,7 +108,7 @@ public class MainActivity extends ActionBarActivity {
                 if (isChecked) {
                     wifi.setWifiEnabled(true);
 
-                    registerReceiver(receiver = new BroadcastReceiver() {
+                    registerReceiver(wifiStateReceiver = new BroadcastReceiver() {
                         @Override
                         public void onReceive(Context c, Intent intent) {
                             int state = wifi.getWifiState();
@@ -341,6 +342,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onStop() {
         try {
             unregisterReceiver(receiver);
+            unregisterReceiver(wifiStateReceiver);
         } catch (IllegalArgumentException ignored) {
 
         }
