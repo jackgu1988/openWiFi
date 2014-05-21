@@ -40,7 +40,9 @@ import android.view.ViewConfiguration;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.org.openwifi.about.AboutDialogue;
@@ -65,6 +67,9 @@ public class MainActivity extends ActionBarActivity {
     private ArrayList<String> wifiSec = new ArrayList<String>();
     private Connector connector;
     private BroadcastReceiver receiver;
+    private Switch onOffSwitch;
+    private TextView scanning;
+    private ProgressBar progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +87,11 @@ public class MainActivity extends ActionBarActivity {
         wifiList = (ListView) findViewById(R.id.wifiList);
 
         wifi = (WifiManager) getSystemService(WIFI_SERVICE);
+
+        scanning = (TextView) findViewById(R.id.scanning);
+        progress = (ProgressBar) findViewById(R.id.progressBar);
+        scanning.setVisibility(View.GONE);
+        progress.setVisibility(View.GONE);
 
         wifiSelect();
         scanWifi();
@@ -151,8 +161,9 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void scan() {
-        Toast.makeText(this, getString(R.string.scanning), Toast.LENGTH_SHORT).show();
 
+        scanning.setVisibility(View.VISIBLE);
+        progress.setVisibility(View.VISIBLE);
         wifi.startScan();
 
         registerReceiver(receiver = new BroadcastReceiver() {
@@ -167,6 +178,8 @@ public class MainActivity extends ActionBarActivity {
                     noWifi();
                     wifiList.setEnabled(false);
                 }
+                scanning.setVisibility(View.GONE);
+                progress.setVisibility(View.GONE);
             }
         }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
     }
@@ -262,7 +275,9 @@ public class MainActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.main, menu);
 
         MenuItem switchItem = menu.findItem(R.id.wifi_on_off);
-        Switch onOffSwitch = (Switch) switchItem.getActionView();
+        onOffSwitch = (Switch) switchItem.getActionView();
+
+        onOffSwitch.setChecked(wifi.isWifiEnabled());
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -317,4 +332,5 @@ public class MainActivity extends ActionBarActivity {
             e.printStackTrace();
         }
     }
+
 }
