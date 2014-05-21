@@ -40,6 +40,7 @@ import android.view.ViewConfiguration;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.org.openwifi.about.AboutDialogue;
@@ -126,7 +127,7 @@ public class MainActivity extends ActionBarActivity {
         alert.showAlert();
     }
 
-    public void refresh() {
+    public void refresh(View v) {
         scanWifi();
     }
 
@@ -259,7 +260,11 @@ public class MainActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+
+        MenuItem switchItem = menu.findItem(R.id.wifi_on_off);
+        Switch onOffSwitch = (Switch) switchItem.getActionView();
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -272,9 +277,6 @@ public class MainActivity extends ActionBarActivity {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-            return true;
-        } else if (id == R.id.action_refresh) {
-            refresh();
             return true;
         } else if (id == R.id.action_about) {
             new AboutDialogue(this);
