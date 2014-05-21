@@ -105,34 +105,37 @@ public class MainActivity extends ActionBarActivity {
         onOffSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                if (isChecked)
                     wifi.setWifiEnabled(true);
-
-                    registerReceiver(wifiStateReceiver = new BroadcastReceiver() {
-                        @Override
-                        public void onReceive(Context c, Intent intent) {
-                            int state = wifi.getWifiState();
-
-                            if (state == WifiManager.WIFI_STATE_ENABLING) {
-                                progDialog = ProgressDialog.show(MainActivity.this,
-                                        getString(R.string.turn_on_wifi),
-                                        getString(R.string.please_wait), true);
-                            } else if (state == WifiManager.WIFI_STATE_ENABLED
-                                    || state == WifiManager.WIFI_STATE_DISABLED
-                                    || state == WifiManager.WIFI_STATE_UNKNOWN)
-                                progDialog.dismiss();
-
-                            if (state == WifiManager.WIFI_STATE_DISABLED
-                                    || state == WifiManager.WIFI_STATE_UNKNOWN)
-                                onOffSwitch.setChecked(false);
-
-                            scanWifi();
-                        }
-                    }, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
-                } else
+                else
                     wifi.setWifiEnabled(false);
             }
         });
+
+        registerReceiver(wifiStateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context c, Intent intent) {
+                int state = wifi.getWifiState();
+
+                if (state == WifiManager.WIFI_STATE_ENABLING) {
+                    progDialog = ProgressDialog.show(MainActivity.this,
+                            getString(R.string.turn_on_wifi),
+                            getString(R.string.please_wait), true);
+                } else if (state == WifiManager.WIFI_STATE_ENABLED
+                        || state == WifiManager.WIFI_STATE_DISABLED
+                        || state == WifiManager.WIFI_STATE_UNKNOWN)
+                    if (progDialog != null)
+                        progDialog.dismiss();
+
+                if (state == WifiManager.WIFI_STATE_DISABLED
+                        || state == WifiManager.WIFI_STATE_UNKNOWN)
+                    onOffSwitch.setChecked(false);
+                else if (state == WifiManager.WIFI_STATE_ENABLED)
+                    onOffSwitch.setChecked(true);
+
+                scanWifi();
+            }
+        }, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
     }
 
     private void wifiSelect() {
@@ -184,7 +187,7 @@ public class MainActivity extends ActionBarActivity {
         WifiInfo wifiInfo = wifi.getConnectionInfo();
 
         adapter = new WifiListAdapter(this, R.id.withText, wifiNames, macNames, wifiSec,
-                wifiInfo.getSSID(), wifiInfo.getBSSID());
+                wifi);
         wifiList.setAdapter(adapter);
 
         connector = new Connector(this);
