@@ -18,12 +18,7 @@
 package com.org.openwifi.openwifi;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.Html;
@@ -47,7 +42,6 @@ public class WifiListAdapter extends ArrayAdapter<String> {
     private ArrayList<String> sec;
     private String currentSSID;
     private String currentBSSID;
-    private WifiManager wifi;
 
     public WifiListAdapter(Context context, int textViewResourceId,
                            ArrayList<String> ssid, ArrayList<String> bssid, ArrayList<String> sec,
@@ -62,7 +56,6 @@ public class WifiListAdapter extends ArrayAdapter<String> {
         this.ssid = ssid;
         this.bssid = bssid;
         this.sec = sec;
-        this.wifi = wifi;
 
         wifiInfo = wifi.getConnectionInfo();
 
@@ -105,30 +98,6 @@ public class WifiListAdapter extends ArrayAdapter<String> {
         } else
             ssidText.setTextColor(context.getResources().getColor(R.color.black));
 
-        statusChangeAdapter(ssidText, bssidText, currentSsid, currentBssid);
-
         return v;
-    }
-
-    private void statusChangeAdapter(final TextView ssidText, TextView bssidText, final String ssid, final String bssid) {
-        BroadcastReceiver connectionStateReceiver;
-        context.registerReceiver(connectionStateReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context c, Intent intent) {
-                ConnectivityManager cm =
-                        (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-
-                if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()) {
-
-                    currentSSID = wifiInfo.getSSID();
-                    currentBSSID = wifiInfo.getBSSID();
-                    if (currentSSID != null && ssid != null
-                            && currentSSID.equals(ssid))
-                        ssidText.setTextColor(context.getResources().getColor(R.color.holo_blue));
-                }
-            }
-        }, new IntentFilter(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION));
     }
 }

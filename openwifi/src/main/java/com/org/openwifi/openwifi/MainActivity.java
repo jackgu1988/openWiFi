@@ -71,7 +71,6 @@ public class MainActivity extends ActionBarActivity {
     private BroadcastReceiver wifiStateReceiver;
     private Switch onOffSwitch;
     private Status scanning;
-    private ProgressBar progress;
 
     private ProgressDialog progDialog;
 
