@@ -123,7 +123,6 @@ public class Connector {
 
                 while (netInfo != null && netInfo.getState() == NetworkInfo.State.CONNECTED) {
                     try {
-
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();

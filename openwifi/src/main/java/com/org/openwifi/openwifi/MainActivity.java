@@ -26,7 +26,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -41,6 +40,7 @@ import android.view.ViewConfiguration;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -70,7 +70,7 @@ public class MainActivity extends ActionBarActivity {
     private BroadcastReceiver receiver;
     private BroadcastReceiver wifiStateReceiver;
     private Switch onOffSwitch;
-    private TextView scanning;
+    private Status scanning;
     private ProgressBar progress;
 
     private ProgressDialog progDialog;
@@ -92,10 +92,10 @@ public class MainActivity extends ActionBarActivity {
 
         wifi = (WifiManager) getSystemService(WIFI_SERVICE);
 
-        scanning = (TextView) findViewById(R.id.scanning);
-        progress = (ProgressBar) findViewById(R.id.progressBar);
-        scanning.setVisibility(View.GONE);
-        progress.setVisibility(View.GONE);
+        scanning = new Status(this, (LinearLayout) findViewById(R.id.statusLayout),
+                (TextView) findViewById(R.id.status), (ProgressBar) findViewById(R.id.progressBar));
+
+        scanning.hide();
 
         wifiSelect();
         scanWifi();
@@ -105,10 +105,14 @@ public class MainActivity extends ActionBarActivity {
         onOffSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
+                if (isChecked) {
                     wifi.setWifiEnabled(true);
-                else
+                    scanning.setWifiOn(true);
+                } else {
                     wifi.setWifiEnabled(false);
+                    scanning.hide();
+                    scanning.setWifiOn(true);
+                }
             }
         });
 
@@ -128,10 +132,14 @@ public class MainActivity extends ActionBarActivity {
                         progDialog.dismiss();
 
                 if (state == WifiManager.WIFI_STATE_DISABLED
-                        || state == WifiManager.WIFI_STATE_UNKNOWN)
+                        || state == WifiManager.WIFI_STATE_UNKNOWN) {
                     onOffSwitch.setChecked(false);
-                else if (state == WifiManager.WIFI_STATE_ENABLED)
+                    scanning.hide();
+                    scanning.setWifiOn(false);
+                } else if (state == WifiManager.WIFI_STATE_ENABLED) {
                     onOffSwitch.setChecked(true);
+                    scanning.setWifiOn(true);
+                }
 
                 scanWifi();
             }
@@ -184,8 +192,6 @@ public class MainActivity extends ActionBarActivity {
 
     private void scanWifi() {
 
-        WifiInfo wifiInfo = wifi.getConnectionInfo();
-
         adapter = new WifiListAdapter(this, R.id.withText, wifiNames, macNames, wifiSec,
                 wifi);
         wifiList.setAdapter(adapter);
@@ -201,8 +207,7 @@ public class MainActivity extends ActionBarActivity {
 
     private void scan() {
 
-        scanning.setVisibility(View.VISIBLE);
-        progress.setVisibility(View.VISIBLE);
+        scanning.scanning();
         wifi.startScan();
 
         registerReceiver(receiver = new BroadcastReceiver() {
@@ -217,8 +222,7 @@ public class MainActivity extends ActionBarActivity {
                     noWifi();
                     wifiList.setEnabled(false);
                 }
-                scanning.setVisibility(View.GONE);
-                progress.setVisibility(View.GONE);
+                scanning.hide();
             }
         }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
     }
@@ -317,6 +321,7 @@ public class MainActivity extends ActionBarActivity {
         onOffSwitch = (Switch) switchItem.getActionView();
 
         onOffSwitch.setChecked(wifi.isWifiEnabled());
+        scanning.setWifiOn(wifi.isWifiEnabled());
 
         onOffSwitchListener();
 
