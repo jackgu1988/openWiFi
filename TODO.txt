@@ -1,0 +1,5 @@
+TODO
+====
+- check if wifi already associated. If yes, updateNetwork(WifiConfiguration config) (WifiManager)
+- list configured networks (WifiManager) as out of range (if they are)
+- show state (authenticating etc)
