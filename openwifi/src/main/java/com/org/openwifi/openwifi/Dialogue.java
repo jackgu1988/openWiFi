@@ -34,7 +34,7 @@ public class Dialogue extends AlertDialog {
         if (col == 0)
             alert = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.DiscDialog));
         else
-            alert = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.Theme_Base));
+            alert = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.Base_V21_Theme_AppCompat));
         alert.setTitle(title)
                 .setView(content);
 

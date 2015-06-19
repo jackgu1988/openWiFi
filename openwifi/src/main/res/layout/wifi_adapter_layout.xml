@@ -9,7 +9,7 @@
         android:id="@+id/ssid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/abc_ic_go_search_api_holo_light"
+        android:drawableLeft="@drawable/abc_ic_go_search_api_mtrl_alpha"
         android:drawablePadding="5dp"
         android:singleLine="true"
         android:textAppearance="?android:attr/textAppearanceLarge"
